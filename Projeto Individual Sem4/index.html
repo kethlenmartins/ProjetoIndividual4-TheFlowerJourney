@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Flowers Journey</title>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <script src="welcomeScene.js"></script>
+    <script src="level1.js"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: whitesmoke;
+        }
+    </style>
+</head>
+<body>
+    <div id="game"></div>
+
+    <script type="text/javascript">
+        /*Global variables definition*/
+        const config = {
+            type: Phaser.AUTO,
+            width: 800, //largura da tela do jogo
+            height: 600, //altura da tela do jogo
+            backgroundColor: '#39addd',
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 200 },
+                    debug: true
+                }
+            },
+            scene: [welcomeScene, level1]
+        };
+        
+        var game = new Phaser.Game(config);
+        game.scene.start('welcomeScene');
+        
+    </script>
+</body>
+</html>
