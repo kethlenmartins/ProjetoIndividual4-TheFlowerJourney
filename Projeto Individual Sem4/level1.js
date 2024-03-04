@@ -1,22 +1,22 @@
 class level1 extends Phaser.Scene {
-    
-    pulando = false;
-    pontuacao = 0;
+
+    pulando = false
     
     constructor () {
         super ({key: 'level1'})
     }
-
-
 
     preload() {
         this.load.image ('background2', 'assets/backgroundLevel1.png');
         this.load.spritesheet ('personagem', 'assets/spritesheetPersonagem.png', {startFrame:0, endFrame: 15, frameWidth:32, frameHeight:48});
         this.load.image ('plataforma', 'assets/plataforma.png');
         this.load.image ('chao', 'assets/chão.png')
+        this.load.image ('flor', 'assets/florPontuação.webp');
     }
 
     create() {
+
+        this.pontuacao = 0
 
         this.cameras.main.fadeIn(1000, 0, 0, 0); 
 
@@ -31,34 +31,48 @@ class level1 extends Phaser.Scene {
 
         this.teclado = this.input.keyboard.createCursorKeys();
 
+        // Plataforma
+
         this.plataforma = this.physics.add.staticImage(400, 200, 'plataforma'); 
         this.physics.add.collider(this.personagem, this.plataforma);
 
-        this.plataforma = this.physics.add.staticImage(250, 500, 'plataforma'); // cria a imagem da primeira platforma na tela do jogo como elemento estático que é afetado pela física
+        this.plataforma = this.physics.add.staticImage(250, 480, 'plataforma');
         this.physics.add.collider(this.personagem, this.plataforma);
 
-        this.placar = this.add.text(50, 50, 'Flores:' + pontuacao, {fontSize:'45px', fill:'#495613'}); // adiciona na tela o texto base do placar
+        this.plataforma = this.physics.add.staticImage(500, 420, 'plataforma');
+        this.physics.add.collider(this.personagem, this.plataforma);
 
-        this.flor = this.physics.add.sprite(larguraJogo/2 ,0 ,'flor'); // cria a moeda na tela do jogo
-            moeda.setCollideWorldBounds(true); // ativa os limites do canva para a moeda e a impede de sair da tela
-            moeda.setBounce (0.7); //
-            this.physics.add.collider(moeda, plataforma);
+        this.plataforma = this.physics.add.staticImage(100, 300, 'plataforma');
+        this.physics.add.collider(this.personagem, this.plataforma);
 
-            this.physics.add.overlap (alien, moeda, function() { // sempre que o alien tiver a mesma posição que a moeda (passar por cima dela), a função abaixo será chamada
+        this.plataforma = this.physics.add.staticImage(760, 370, 'plataforma');
+        this.physics.add.collider(this.personagem, this.plataforma);
 
-                moeda.setVisible (false); // a moeda ficará invisível
-                moeda.setDepth (1); // faz com que a moeda seja renderizada sobre outros elementos do código e não atravesse as plataformas
+        this.plataforma = this.physics.add.staticImage(600, 310, 'plataforma');
+        this.physics.add.collider(this.personagem, this.plataforma);
 
-                moeda.y = Phaser.Math.RND.between (50,650); // uma nova posição vertical para a moeda será escolhida aleatoriamente -> foi necessário tirar a variável posiçãoMoeda_Y, pois o código não rodava com ela
-                moeda.x = Phaser.Math.RND.between (50,650); // uma nova posição horizontal vai ser escolhida
 
-                pontuacao += 1; // o número de pontos na variável pontuação crescerá em 1
+        // Placar
+        this.placar = this.add.text(50, 50, 'Flores:' + this.pontuacao, {fontSize:'45px', fill:'#495613'});
 
-                placar.setText ('Moedas:' + pontuacao); // o texto do placar será atualizado com a nova pontuação
+        // Flor        
+        this.flor = this.physics.add.sprite(20, 50 ,'flor').setScale(0.025); // adiciona a flor na tela
+            this.flor.setCollideWorldBounds(true); // ativa os limites de mundo para a flor
+            this.flor.setBounce (0.4); // ativa o bounce da flor
+            this.physics.add.collider(this.flor, this.plataforma); // ativa a colisão entre a flor e as plataformas
 
-                moeda.setVisible (true);
+        this.physics.add.overlap(this.personagem, this.flor, () => { // overlap entre a personagem e a flor
+            this.flor.setVisible (false); // a flor fica invisível
 
-            });
+            this.flor.y = Phaser.Math.RND.between (0,200); //posição vertical aleatória
+            this.flor.x = Phaser.Math.RND.between (50,650); //posição horizontal aleatória
+
+            this.pontuacao += 1; // o número de pontos na variável pontuação crescerá em 1
+
+            this.placar.setText ('Flores:' + this.pontuacao); // o texto do placar será atualizado com a nova quantidade de flores
+
+            this.flor.setVisible (true); // a flor fica visível de novo
+        });
 
         this.anims.create ({
             key:'andarDireita',
@@ -107,3 +121,4 @@ class level1 extends Phaser.Scene {
         
     }
 }
+
