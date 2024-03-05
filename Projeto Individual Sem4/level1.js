@@ -22,7 +22,7 @@ class level1 extends Phaser.Scene {
 
         this.background = this.add.image (400, 300, 'background2'); // cria o background
 
-        this.personagem = this.physics.add.sprite (0,0,'personagem').setScale(1.5); // cria a personagem
+        this.personagem = this.physics.add.sprite (0,1,'personagem').setScale(1.5); // cria a personagem
         this.personagem.setCollideWorldBounds(true); // define os limites de mundo para a personagem
 
         this.chao = this.physics.add.staticImage (400, 600, 'chao'); // cria o chão
@@ -54,24 +54,30 @@ class level1 extends Phaser.Scene {
         // Placar
         this.placar = this.add.text(50, 50, 'Flores:' + this.pontuacao, {fontSize:'45px', fill:'#495613'});
 
-        // Flor        
-        this.flor = this.physics.add.sprite(20, 50 ,'flor').setScale(0.025); // adiciona a flor na tela
-        this.flor.setCollideWorldBounds(true); // ativa os limites de mundo para a flor
-        this.flor.setBounce (0.4); // ativa o bounce da flor
-        this.physics.add.collider(this.flor, this.plataforma); // ativa a colisão entre a flor e as plataformas
+        // flor
+        this.floresGroup = this.physics.add.group(); // adiciona o grupo de elementos "flor"
 
-        this.physics.add.overlap(this.personagem, this.flor, () => { // overlap entre a personagem e a flor
-        this.flor.setVisible (false); // a flor fica invisível
+        const numeroDeFlores = 100;
 
-        this.flor.y = Phaser.Math.RND.between (0,200); //posição vertical aleatória
-        this.flor.x = Phaser.Math.RND.between (50,650); //posição horizontal aleatória
-
-        this.pontuacao += 1; // o número de pontos na variável pontuação crescerá em 1
-
-        this.placar.setText ('Flores:' + this.pontuacao); // o texto do placar será atualizado com a nova quantidade de flores
-
-        this.flor.setVisible (true); // a flor fica visível de novo
-        });
+        for (let i = 0; i < numeroDeFlores; i++) {
+            const novaFlor = this.physics.add.sprite(Phaser.Math.RND.between(50, 750), Phaser.Math.RND.between(50, 550), 'flor').setScale(0.025);
+            novaFlor.setCollideWorldBounds(true); // define limites de mundo para as flores
+            this.physics.add.collider(novaFlor, this.chao); // colisão entre flor e chão
+            novaFlor.setBounce(0.7); // bounce das flores
+            this.physics.add.collider(novaFlor, this.plataforma); // colisão entre flor e plataforma
+        
+            this.physics.add.overlap(this.personagem, novaFlor, () => { //overlap entre a personagem e as flores
+                novaFlor.setVisible(false); // a flor fica invisível
+                novaFlor.y = Phaser.Math.RND.between(50, 650); // nova posição vertical
+                novaFlor.x = Phaser.Math.RND.between(50, 750); // nova posição horizontal
+                this.pontuacao += 1; // soma-se 1 ao número de flores
+                this.placar.setText('Flores:' + this.pontuacao); // atualização do placar
+                novaFlor.setVisible(true); // a flor fica visível
+            });
+        
+            // Adicione a nova flor ao grupo
+            this.floresGroup.add(novaFlor);
+        }
 
         // animações de movimento do personagem
         this.anims.create ({ // movimento para a direita
